@@ -172,7 +172,7 @@
                 <Pivot x:Name="FakePivot" Height="48">
                     <PivotItem Header="ScrollViewer"/>
                     <PivotItem Header="ListView"/>
-                    <PivotItem Header="GridView"/>
+                    <PivotItem Header="ItemsRepeater"/>
                 </Pivot>
             </StackPanel>
             <ScrollBar x:Name="scrollBar" Grid.RowSpan="2" HorizontalAlignment="Right"/>
