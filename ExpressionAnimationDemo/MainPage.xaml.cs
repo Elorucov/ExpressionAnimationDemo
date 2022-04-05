@@ -36,7 +36,7 @@ namespace ExpressionAnimationDemo {
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
             List<Test> samples = new List<Test>();
-           foreach (int i in Enumerable.Range(1, 100)) {
+            foreach (int i in Enumerable.Range(1, 100)) {
                 samples.Add(new Test(i));
             }
             SampleListView.ItemsSource = samples;
@@ -50,11 +50,11 @@ namespace ExpressionAnimationDemo {
                 (ActionButtons.Children[0] as Control).Focus(FocusState.Programmatic);
             };
 
-            ChangeScrollViewerForAnimation();
-            MainFlipView.SelectionChanged += FlipViewSelectionChanged;
-
             SetupMargins();
             Header.SizeChanged += Header_SizeChanged;
+
+            ChangeScrollViewerForAnimation();
+            MainFlipView.SelectionChanged += FlipViewSelectionChanged;
 
             MainFlipView.SizeChanged += MainFlipView_SizeChanged;
             PointerEntered += MainPage_PointerEntered; // need to change IndicatorMode for scroll bar.
@@ -174,9 +174,6 @@ namespace ExpressionAnimationDemo {
         }
 
         private void SetupExpressionAnimations(ScrollViewer scrollViewer) {
-            // Scroll bar
-            
-
             // Expression animations
             ElementCompositionPreview.SetIsTranslationEnabled(Avatar, true);
             ElementCompositionPreview.SetIsTranslationEnabled(UserName, true);
@@ -192,18 +189,17 @@ namespace ExpressionAnimationDemo {
             float c = usernameHeight / b;
 
             // Avatar offset & opacity
-            SetupExpressionAnimation(scrollViewer, Avatar, $"Clamp(Scroll.Translation.Y / {a}, -{avaHeight}, 0)", "Translation.Y");
+            SetupExpressionAnimation(scrollViewer, Avatar, $"Clamp(Scroll.Translation.Y / (1 / {avaHeight} * ({avaHeight + actionButtonsHeight})), -{avaHeight}, 0)", "Translation.Y");
             SetupExpressionAnimation(scrollViewer, Avatar, $"(Clamp(1 / -{avaHeight + actionButtonsHeight} * Scroll.Translation.Y, 0, 1) - 1) * -1", "Opacity");
 
             // Username translation & scale
-            SetupExpressionAnimation(scrollViewer, UserName, $"Clamp(Scroll.Translation.Y / {a}, -{avaHeight}, 0)", "Translation.Y");
+            SetupExpressionAnimation(scrollViewer, UserName, $"Clamp(Scroll.Translation.Y / (1 / {avaHeight} * ({avaHeight + actionButtonsHeight})), -{avaHeight}, 0)", "Translation.Y");
             SetupExpressionAnimation(scrollViewer, UserName, $"Clamp(Scroll.Translation.Y / (-{avaHeight + actionButtonsHeight + c} * -{b}), 1 / -{b}, 0) + 1", "Scale.X");
             SetupExpressionAnimation(scrollViewer, UserName, $"Clamp(Scroll.Translation.Y / (-{avaHeight + actionButtonsHeight + c} * -{b}), 1 / -{b}, 0) + 1", "Scale.Y");
 
             // Header background offset
             SetupExpressionAnimation(scrollViewer, HeaderBackground, $"Clamp(Scroll.Translation.Y, -{avaHeight + actionButtonsHeight + c}, 0)", "Offset.Y");
-            // SetupExpressionAnimation(scrollViewer, HeaderBackground, $"Clamp(-Scroll.Translation.Y / (1 / ({avaHeight + actionButtonsHeight + c}) * -{avaHeight}), -{avaHeight + actionButtonsHeight + c}, 0)", "Offset.Y");
-
+            
             // Action buttons scale & opacity
             foreach (FrameworkElement button in ActionButtons.Children) {
                 ElementCompositionPreview.SetIsTranslationEnabled(button, true);
@@ -216,7 +212,7 @@ namespace ExpressionAnimationDemo {
             }
 
             // Action buttons panel translation
-            SetupExpressionAnimation(scrollViewer, ActionButtons, $"Clamp(Scroll.Translation.Y / {a}, -{avaHeight + usernameHeight + c}, 0)", "Translation.Y");
+            SetupExpressionAnimation(scrollViewer, ActionButtons, $"Clamp(Scroll.Translation.Y / (1 / {avaHeight} * ({avaHeight + actionButtonsHeight})), -{avaHeight + usernameHeight + c}, 0)", "Translation.Y");
 
             // Pivot tabs translation
             SetupExpressionAnimation(scrollViewer, FakePivot, $"Clamp(Scroll.Translation.Y, -{avaHeight + actionButtonsHeight + c}, 0)", "Translation.Y");
