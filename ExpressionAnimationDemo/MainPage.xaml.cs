@@ -141,7 +141,7 @@ namespace ExpressionAnimationDemo {
             // Autoscroll to fix header in full or compact state.
             double voff = e.FinalView.VerticalOffset;
             double header = Header.ActualHeight;
-            double compactHeader = header - AvatarHeight - ActionButtons.ActualHeight - (UserName.ActualHeight / UserNamePanelScale);
+            double compactHeader = header - AvatarHeight - (Cover.Height - Avatar.Margin.Top) - ActionButtons.ActualHeight - (UserName.ActualHeight / UserNamePanelScale);
             double hh = header - compactHeader;
 
             if (e.IsInertial && e.NextView.VerticalOffset == voff && voff < hh) {
@@ -175,30 +175,36 @@ namespace ExpressionAnimationDemo {
 
         private void SetupExpressionAnimations(ScrollViewer scrollViewer) {
             // Expression animations
+            ElementCompositionPreview.SetIsTranslationEnabled(Cover, true);
             ElementCompositionPreview.SetIsTranslationEnabled(Avatar, true);
             ElementCompositionPreview.SetIsTranslationEnabled(UserName, true);
             ElementCompositionPreview.SetIsTranslationEnabled(ActionButtons, true);
             ElementCompositionPreview.SetIsTranslationEnabled(FakePivot, true);
 
-            float avaHeight = (float)(Math.Round(AvatarHeight));
+            float avaHeight = (float)Math.Round(AvatarHeight);
+            float avaHalf = avaHeight / 2;
+            float coverHeight = (float)Math.Round(Cover.Height) - avaHalf;
             float usernameHeight = (float)Math.Round(UserName.ActualHeight); // user name & online info stackpanel's height
-            float actionButtonsHeight = (float)Math.Round(ActionButtons.ActualHeight);
+            float actionButtonsHeight = (float)Math.Round(ActionButtons.ActualHeight + ActionButtons.Margin.Top + ActionButtons.Margin.Bottom);
 
-            float a = 1.0f / avaHeight * (avaHeight + actionButtonsHeight); // for header animation
+            float a = 1.0f / avaHeight * (coverHeight + avaHeight + avaHalf + actionButtonsHeight); // for header animation
             float b = (float)UserNamePanelScale;
             float c = usernameHeight / b;
 
+            // Cover offset
+            SetupExpressionAnimation(scrollViewer, Cover, $"Clamp(Scroll.Translation.Y / (1 / {coverHeight + avaHeight + avaHalf} * ({coverHeight + avaHeight + actionButtonsHeight})), -{coverHeight + avaHeight + avaHalf}, 0)", "Translation.Y");
+
             // Avatar offset & opacity
-            SetupExpressionAnimation(scrollViewer, Avatar, $"Clamp(Scroll.Translation.Y / (1 / {avaHeight} * ({avaHeight + actionButtonsHeight})), -{avaHeight}, 0)", "Translation.Y");
-            SetupExpressionAnimation(scrollViewer, Avatar, $"(Clamp(1 / -{avaHeight + actionButtonsHeight} * Scroll.Translation.Y, 0, 1) - 1) * -1", "Opacity");
+            SetupExpressionAnimation(scrollViewer, Avatar, $"Clamp(Scroll.Translation.Y / (1 / {coverHeight + avaHeight + avaHalf} * ({coverHeight + avaHeight + actionButtonsHeight})), -{coverHeight + avaHeight + avaHalf}, 0)", "Translation.Y");
+            // SetupExpressionAnimation(scrollViewer, Avatar, $"(Clamp(1 / -{coverHeight + avaHeight + actionButtonsHeight} * Scroll.Translation.Y, 0, 1) - 1) * -1", "Opacity");
 
             // Username translation & scale
-            SetupExpressionAnimation(scrollViewer, UserName, $"Clamp(Scroll.Translation.Y / (1 / {avaHeight} * ({avaHeight + actionButtonsHeight})), -{avaHeight}, 0)", "Translation.Y");
-            SetupExpressionAnimation(scrollViewer, UserName, $"Clamp(Scroll.Translation.Y / (-{avaHeight + actionButtonsHeight + c} * -{b}), 1 / -{b}, 0) + 1", "Scale.X");
-            SetupExpressionAnimation(scrollViewer, UserName, $"Clamp(Scroll.Translation.Y / (-{avaHeight + actionButtonsHeight + c} * -{b}), 1 / -{b}, 0) + 1", "Scale.Y");
+            SetupExpressionAnimation(scrollViewer, UserName, $"Clamp(Scroll.Translation.Y / (1 / {coverHeight + avaHeight + avaHalf} * ({coverHeight + avaHeight + actionButtonsHeight})), -{coverHeight + avaHeight + avaHalf}, 0)", "Translation.Y");
+            SetupExpressionAnimation(scrollViewer, UserName, $"Clamp(Scroll.Translation.Y / (-{coverHeight + avaHeight + actionButtonsHeight + c} * -{b}), 1 / -{b}, 0) + 1", "Scale.X");
+            SetupExpressionAnimation(scrollViewer, UserName, $"Clamp(Scroll.Translation.Y / (-{coverHeight + avaHeight + actionButtonsHeight + c} * -{b}), 1 / -{b}, 0) + 1", "Scale.Y");
 
             // Header background offset
-            SetupExpressionAnimation(scrollViewer, HeaderBackground, $"Clamp(Scroll.Translation.Y, -{avaHeight + actionButtonsHeight + c}, 0)", "Offset.Y");
+            SetupExpressionAnimation(scrollViewer, HeaderBackground, $"Clamp(Scroll.Translation.Y, -{coverHeight + avaHeight + (avaHeight - avaHalf) + actionButtonsHeight + c}, 0)", "Offset.Y");
             
             // Action buttons scale & opacity
             foreach (FrameworkElement button in ActionButtons.Children) {
@@ -206,16 +212,16 @@ namespace ExpressionAnimationDemo {
                 Visual abv = ElementCompositionPreview.GetElementVisual(button);
                 abv.CenterPoint = new Vector3((int)button.ActualWidth / 2, 0, 0);
 
-                SetupExpressionAnimation(scrollViewer, button, $"(Clamp(Scroll.Translation.Y / -{avaHeight + actionButtonsHeight}, 0, 1) - 1) * -1", "Scale.X");
-                SetupExpressionAnimation(scrollViewer, button, $"(Clamp(Scroll.Translation.Y / -{avaHeight + actionButtonsHeight}, 0, 1) - 1) * -1", "Scale.Y");
-                SetupExpressionAnimation(scrollViewer, button, $"(Clamp(Scroll.Translation.Y / -{avaHeight + actionButtonsHeight}, 0, 1) - 1) * -1", "Opacity");
+                SetupExpressionAnimation(scrollViewer, button, $"(Clamp(Scroll.Translation.Y / -{coverHeight + avaHeight + (avaHeight - avaHalf) + actionButtonsHeight}, 0, 1) - 1) * -1", "Scale.X");
+                SetupExpressionAnimation(scrollViewer, button, $"(Clamp(Scroll.Translation.Y / -{coverHeight + avaHeight + (avaHeight - avaHalf) + actionButtonsHeight}, 0, 1) - 1) * -1", "Scale.Y");
+                SetupExpressionAnimation(scrollViewer, button, $"(Clamp(Scroll.Translation.Y / -{coverHeight + avaHeight + (avaHeight - avaHalf) + actionButtonsHeight}, 0, 1) - 1) * -1", "Opacity");
             }
 
             // Action buttons panel translation
-            SetupExpressionAnimation(scrollViewer, ActionButtons, $"Clamp(Scroll.Translation.Y / (1 / {avaHeight} * ({avaHeight + actionButtonsHeight})), -{avaHeight + usernameHeight + c}, 0)", "Translation.Y");
+            SetupExpressionAnimation(scrollViewer, ActionButtons, $"Clamp(Scroll.Translation.Y / (1 / {coverHeight + avaHeight + (avaHeight - avaHalf) + actionButtonsHeight} * ({coverHeight + avaHeight + (avaHeight - avaHalf) + actionButtonsHeight})), -{coverHeight + avaHeight + (avaHeight - avaHalf) + usernameHeight + c}, 0)", "Translation.Y");
 
             // Pivot tabs translation
-            SetupExpressionAnimation(scrollViewer, FakePivot, $"Clamp(Scroll.Translation.Y, -{avaHeight + actionButtonsHeight + c}, 0)", "Translation.Y");
+            SetupExpressionAnimation(scrollViewer, FakePivot, $"Clamp(Scroll.Translation.Y, -{coverHeight + avaHeight + (avaHeight - avaHalf) + actionButtonsHeight + c}, 0)", "Translation.Y");
         }
 
         private void SetupExpressionAnimation(ScrollViewer scrollViewer, UIElement target, string expression, string property) {

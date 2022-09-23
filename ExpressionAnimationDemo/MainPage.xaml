@@ -121,54 +121,45 @@
                 </FlipViewItem>
             </FlipView>
             <Border x:Name="HeaderBackground" Background="{ThemeResource SolidBackgroundFillColorBaseBrush}">
-                <Border Background="{ThemeResource LayerFillColorAltBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,47"/>
+                <Border Background="{ThemeResource SolidBackgroundFillColorQuarternaryBrush}" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,47"/>
             </Border>
             <StackPanel x:Name="Header">
-                <Ellipse x:Name="Avatar" Margin="12,12,12,0" Width="96" Height="96" VerticalAlignment="Top">
-                    <Ellipse.Fill>
-                        <ImageBrush>
+                <Border x:Name="Cover" VerticalAlignment="Top" Height="144">
+                    <Border.Background>
+                        <ImageBrush Stretch="UniformToFill">
                             <ImageBrush.ImageSource>
-                                <BitmapImage DecodePixelHeight="96" DecodePixelWidth="96" DecodePixelType="Logical" UriSource="https://avatars.githubusercontent.com/u/22731185"/>
+                                <BitmapImage DecodePixelType="Logical" UriSource="https://sun9-6.userapi.com/Mz7uI5czeuRoTatJerviOsqb7VDQJy2efb68PA/IftROpP2oS0.jpg"/>
                             </ImageBrush.ImageSource>
                         </ImageBrush>
-                    </Ellipse.Fill>
-                </Ellipse>
+                    </Border.Background>
+                </Border>
+                <Border x:Name="Avatar" Margin="12,-48,12,-3" Width="96" Height="96" CornerRadius="48" VerticalAlignment="Top" Background="{ThemeResource SolidBackgroundFillColorQuarternaryBrush}">
+                    <Ellipse x:Name="AvatarImage" Margin="3" Width="90" Height="90">
+                        <Ellipse.Fill>
+                            <ImageBrush>
+                                <ImageBrush.ImageSource>
+                                    <BitmapImage DecodePixelHeight="90" DecodePixelWidth="90" DecodePixelType="Logical" UriSource="https://avatars.githubusercontent.com/u/22731185"/>
+                                </ImageBrush.ImageSource>
+                            </ImageBrush>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                </Border>
                 <StackPanel x:Name="UserName" Grid.Column="1" VerticalAlignment="Center" UseLayoutRounding="False">
                     <TextBlock FontSize="22" LineHeight="24" LineStackingStrategy="BlockLineHeight" UseLayoutRounding="False" Margin="0,9,0,4" TextAlignment="Center" FontWeight="SemiBold" MaxLines="3" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Text="Elchin Orujov"/>
                     <TextBlock FontSize="16" LineHeight="18" LineStackingStrategy="BlockLineHeight" UseLayoutRounding="False" Margin="0,0,0,9" Style="{StaticResource BodyTextBlockStyle}" TextAlignment="Center" MaxLines="2" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="online"/>
                 </StackPanel>
-                <StackPanel x:Name="ActionButtons" HorizontalAlignment="Center" Orientation="Horizontal">
-                    <HyperlinkButton Width="72" Height="72" Padding="0,4,0,0" VerticalContentAlignment="Top">
-                        <StackPanel>
-                            <FontIcon FontSize="24" Glyph=""/>
-                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Margin="0,8" TextWrapping="Wrap" MaxLines="2" TextAlignment="Center" Text="Send a message"/>
-                        </StackPanel>
-                    </HyperlinkButton>
-                    <HyperlinkButton Width="72" Height="72" Padding="0,4,0,0" VerticalContentAlignment="Top">
-                        <StackPanel>
-                            <FontIcon FontSize="24" Glyph=""/>
-                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Margin="0,8" TextWrapping="Wrap" MaxLines="2" TextAlignment="Center" Text="View profile"/>
-                        </StackPanel>
-                    </HyperlinkButton>
-                    <HyperlinkButton Width="72" Height="72" Padding="0,4,0,0" VerticalContentAlignment="Top">
-                        <StackPanel>
-                            <FontIcon FontSize="24" Glyph=""/>
-                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Margin="0,8" TextWrapping="Wrap" MaxLines="2" TextAlignment="Center" Text="Enable noifications"/>
-                        </StackPanel>
-                    </HyperlinkButton>
-                    <HyperlinkButton Width="72" Height="72" Padding="0,4,0,0" VerticalContentAlignment="Top">
-                        <StackPanel>
-                            <FontIcon FontSize="24" Glyph=""/>
-                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Margin="0,8" TextWrapping="Wrap" MaxLines="2" TextAlignment="Center" Text="Search"/>
-                        </StackPanel>
-                    </HyperlinkButton>
-                    <HyperlinkButton Width="72" Height="72" Padding="0,4,0,0" VerticalContentAlignment="Top">
-                        <StackPanel>
-                            <FontIcon FontSize="24" Glyph=""/>
-                            <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Margin="0,8" TextWrapping="Wrap" MaxLines="2" TextAlignment="Center" Text="More"/>
-                        </StackPanel>
-                    </HyperlinkButton>
-                </StackPanel>
+                <Grid x:Name="ActionButtons" Margin="6,0,6,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Margin="6,0" Grid.Column="0" HorizontalAlignment="Stretch" Style="{StaticResource AccentButtonStyle}" Content="Write message"/>
+                    <Button Margin="6,0" Grid.Column="1" HorizontalAlignment="Stretch" Content="Add to friends"/>
+                    <Button Margin="6,0" Grid.Column="2" HorizontalAlignment="Stretch">
+                        <FontIcon Glyph=""/>
+                    </Button>
+                </Grid>
                 <Pivot x:Name="FakePivot" Height="48">
                     <PivotItem Header="ScrollViewer"/>
                     <PivotItem Header="ListView"/>
